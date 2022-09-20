@@ -7,7 +7,7 @@ export default function InterviewerListItem({ id, name, avatar, selected, setInt
   "interviewers__item--selected": selected
  })
  return (
-  <li className={interviewerListClass} onClick={() => setInterviewer(id)}>
+  <li className={interviewerListClass} onClick={setInterviewer}>
    <img
     className="interviewers__item-image"
     src={avatar}
