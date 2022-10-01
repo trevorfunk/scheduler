@@ -6,7 +6,7 @@ import "components/Application.scss";
 import DayList from "./DayList";
 import Appointment from "components/Appointment";
 import { promiseImpl } from "ejs";
-import { getAppointmentsForDay } from "helpers/selectors";
+import { getAppointmentsForDay, getInterview } from "helpers/selectors";
 
 export default function Application(props) {
 
@@ -62,9 +62,10 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {dailyAppointments.map(({ id, ...appointments }) => {
+        {/* {dailyAppointments.map(({ id, ...appointments }) => {
           return <Appointment key={id} {...appointments} />
-        })}
+        })} */}
+        <>{schedule}</>
         <Appointment key="last" time="5pm" />
       </section>
     </main>
