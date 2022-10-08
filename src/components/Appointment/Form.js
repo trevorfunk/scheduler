@@ -4,6 +4,8 @@ import InterviewerList from "components/InterviewerList";
 import { useState } from "react";
 
 export default function Form(props) {
+  const { onCancel, dailyInterviewers, save, id } = props;
+
   const [student, setStudent] = useState(props.student || "");
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
 
@@ -13,7 +15,7 @@ export default function Form(props) {
   };
   const cancel = () => {
     reset();
-    props.onCancel();
+    onCancel();
   };
 
   return (
@@ -30,7 +32,7 @@ export default function Form(props) {
           />
         </form>
         <InterviewerList
-          interviewers={[]}
+          interviewers={dailyInterviewers}
           value={interviewer}
           onChange={setInterviewer}
         />
@@ -40,7 +42,7 @@ export default function Form(props) {
           <Button danger onClick={cancel}>
             Cancel
           </Button>
-          <Button confirm onClick={() => props.onSave(student, interviewer)}>
+          <Button confirm onClick={(event) => save(student, interviewer, id)}>
             Save
           </Button>
         </section>

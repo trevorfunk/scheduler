@@ -20,6 +20,25 @@ export default function Application(props) {
     interviewers: {},
   });
 
+  function bookInterview(id, interview) {
+    return axios.put(`api/appointments/${id}`, { interview }).then((res) => {
+      const appointment = {
+        ...state.appointments[id],
+        interview: { ...interview },
+      };
+
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment,
+      };
+
+      setState({
+        ...state,
+        appointments,
+      });
+    });
+  }
+
   const dailyAppointments = getAppointmentsForDay(state, state.day);
   const dailyInterviewers = getInterviewersForDay(state, state.day);
   const schedule = dailyAppointments.map((appointment) => {
@@ -32,6 +51,7 @@ export default function Application(props) {
         time={appointment.time}
         interview={interview}
         dailyInterviewers={dailyInterviewers}
+        bookInterview={bookInterview}
       />
     );
   });
@@ -72,9 +92,6 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {/* {dailyAppointments.map(({ id, ...appointments }) => {
-          return <Appointment key={id} {...appointments} />
-        })} */}
         <>{schedule}</>
         <Appointment key="last" time="5pm" />
       </section>
