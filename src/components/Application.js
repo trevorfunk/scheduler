@@ -10,54 +10,11 @@ import {
   getInterview,
   getInterviewersForDay,
 } from "helpers/selectors";
+import useApplicationData from "hooks/useApplicationData";
 
 export default function Application(props) {
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    appointments: {},
-    interviewers: {},
-  });
-
-  const setDay = (day) => setState({ ...state, day });
-
-  function bookInterview(id, interview) {
-    return axios.put(`api/appointments/${id}`, { interview }).then((res) => {
-      const appointment = {
-        ...state.appointments[id],
-        interview: { ...interview },
-      };
-
-      const appointments = {
-        ...state.appointments,
-        [id]: appointment,
-      };
-
-      setState({
-        ...state,
-        appointments,
-      });
-    });
-  }
-
-  function cancelInterview(id) {
-    return axios.delete(`api/appointments/${id}`).then((res) => {
-      const appointment = {
-        ...state.appointments[id],
-        interview: null,
-      };
-
-      const appointments = {
-        ...state.appointments,
-        [id]: appointment,
-      };
-
-      setState({
-        ...state,
-        appointments,
-      });
-    });
-  }
+  const { state, setState, setDay, bookInterview, cancelInterview } =
+    useApplicationData();
 
   useEffect(() => {
     Promise.all([
