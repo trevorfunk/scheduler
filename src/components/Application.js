@@ -5,7 +5,6 @@ import axios from "axios";
 import "components/Application.scss";
 import DayList from "./DayList";
 import Appointment from "components/Appointment";
-import { promiseImpl } from "ejs";
 import {
   getAppointmentsForDay,
   getInterview,
@@ -19,6 +18,8 @@ export default function Application(props) {
     appointments: {},
     interviewers: {},
   });
+
+  const setDay = (day) => setState({ ...state, day });
 
   function bookInterview(id, interview) {
     return axios.put(`api/appointments/${id}`, { interview }).then((res) => {
@@ -39,24 +40,24 @@ export default function Application(props) {
     });
   }
 
-  const dailyAppointments = getAppointmentsForDay(state, state.day);
-  const dailyInterviewers = getInterviewersForDay(state, state.day);
-  const schedule = dailyAppointments.map((appointment) => {
-    const interview = getInterview(state, appointment.interview);
+  function cancelInterview(id) {
+    return axios.delete(`api/appointments/${id}`).then((res) => {
+      const appointment = {
+        ...state.appointments[id],
+        interview: null,
+      };
 
-    return (
-      <Appointment
-        key={appointment.id}
-        id={appointment.id}
-        time={appointment.time}
-        interview={interview}
-        dailyInterviewers={dailyInterviewers}
-        bookInterview={bookInterview}
-      />
-    );
-  });
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment,
+      };
 
-  const setDay = (day) => setState({ ...state, day });
+      setState({
+        ...state,
+        appointments,
+      });
+    });
+  }
 
   useEffect(() => {
     Promise.all([
@@ -72,6 +73,24 @@ export default function Application(props) {
       }));
     });
   }, []);
+
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  const dailyInterviewers = getInterviewersForDay(state, state.day);
+  const schedule = dailyAppointments.map((appointment) => {
+    const interview = getInterview(state, appointment.interview);
+
+    return (
+      <Appointment
+        key={appointment.id}
+        id={appointment.id}
+        time={appointment.time}
+        interview={interview}
+        dailyInterviewers={dailyInterviewers}
+        bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
+      />
+    );
+  });
 
   return (
     <main className="layout">
