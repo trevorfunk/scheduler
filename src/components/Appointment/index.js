@@ -7,6 +7,7 @@ import Empty from "./Empty";
 import Form from "./Form.js";
 import Status from "./Status.js";
 import Confirm from "./Confirm";
+import Error from "./Error";
 
 export default function Appointment(props) {
   const EMPTY = "EMPTY";
@@ -16,6 +17,8 @@ export default function Appointment(props) {
   const DELETING = "DELETING";
   const CONFIRM = "CONFIRM";
   const EDIT = "EDIT";
+  const ERROR_SAVE = "ERROR_SAVE";
+  const ERROR_DELETE = "ERROR_DELETE";
 
   const {
     bookInterview,
@@ -40,7 +43,11 @@ export default function Appointment(props) {
       interviewer,
     };
     transition(SAVING);
-    bookInterview(id, interview).then(() => transition(SHOW));
+    bookInterview(id, interview)
+      .then(() => transition(SHOW))
+      .catch((err) => {
+        transition(ERROR_SAVE);
+      });
   }
 
   function onDelete(id) {
@@ -48,8 +55,12 @@ export default function Appointment(props) {
   }
 
   function confirm() {
-    transition(DELETING);
-    cancelInterview(id).then(() => transition(EMPTY));
+    transition(DELETING, true);
+    cancelInterview(id)
+      .then(() => transition(EMPTY))
+      .catch((err) => {
+        transition(ERROR_DELETE, true);
+      });
   }
 
   return (
@@ -91,6 +102,18 @@ export default function Appointment(props) {
           dailyInterviewers={dailyInterviewers}
           save={save}
           id={id}
+        />
+      )}
+      {mode === ERROR_SAVE && (
+        <Error
+          message="Could not create appointment."
+          onClose={() => transition(SHOW)}
+        />
+      )}
+      {mode === ERROR_DELETE && (
+        <Error
+          message="Could not cancel appointment."
+          onClose={() => transition(SHOW)}
         />
       )}
     </article>
