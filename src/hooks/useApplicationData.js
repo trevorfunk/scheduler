@@ -27,7 +27,23 @@ export default function useApplicationData() {
     });
   }, []);
 
+  function updateSpots(addApp) {
+    const days = state.days.map((day) => {
+      if (day.name !== state.day) {
+        return { ...day };
+      } else {
+        if (addApp === undefined) {
+          return { ...day, spots: day.spots + 1 };
+        } else if (addApp === addApp) {
+          return { ...day, spots: day.spots - 1 };
+        }
+      }
+    });
+    return days;
+  }
+
   function bookInterview(id, interview) {
+    const addApp = "add Appointment";
     return axios.put(`api/appointments/${id}`, { interview }).then((res) => {
       const appointment = {
         ...state.appointments[id],
@@ -39,10 +55,8 @@ export default function useApplicationData() {
         [id]: appointment,
       };
 
-      setState({
-        ...state,
-        appointments,
-      });
+      const days = updateSpots(addApp);
+      setState((prev) => ({ ...prev, appointments, days }));
     });
   }
 
@@ -58,10 +72,8 @@ export default function useApplicationData() {
         [id]: appointment,
       };
 
-      setState({
-        ...state,
-        appointments,
-      });
+      const days = updateSpots();
+      setState({ ...state, appointments, days });
     });
   }
 

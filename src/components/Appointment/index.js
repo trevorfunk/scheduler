@@ -20,14 +20,8 @@ export default function Appointment(props) {
   const ERROR_SAVE = "ERROR_SAVE";
   const ERROR_DELETE = "ERROR_DELETE";
 
-  const {
-    bookInterview,
-    dailyInterviewers,
-    id,
-    time,
-    interview,
-    cancelInterview,
-  } = props;
+  const { bookInterview, interviewers, id, time, interview, cancelInterview } =
+    props;
 
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
@@ -37,7 +31,7 @@ export default function Appointment(props) {
     transition(EDIT);
   }
 
-  function save(name, interviewer, id) {
+  function onSave(name, interviewer, id) {
     const interview = {
       student: name,
       interviewer,
@@ -83,8 +77,8 @@ export default function Appointment(props) {
           onCancel={() => back()}
           student={interview.student}
           interviewer={interview.interviewer}
-          dailyInterviewers={dailyInterviewers}
-          save={save}
+          interviewers={interviewers}
+          onSave={onSave}
           id={id}
         />
       )}
@@ -99,8 +93,8 @@ export default function Appointment(props) {
       {mode === CREATE && (
         <Form
           onCancel={() => back()}
-          dailyInterviewers={dailyInterviewers}
-          save={save}
+          interviewers={interviewers}
+          onSave={onSave}
           id={id}
         />
       )}
