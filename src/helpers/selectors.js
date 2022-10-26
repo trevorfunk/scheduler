@@ -1,7 +1,9 @@
+//Function to get correct appointment for the correct day from the api
 export function getAppointmentsForDay(state, day) {
   let dayAppointments = [];
   let appointmentData = [];
 
+  //Looping through state.days to find the correct day
   for (const dayTitle of state.days) {
     if (dayTitle.name === day) {
       dayAppointments = dayTitle.appointments;
@@ -15,6 +17,7 @@ export function getAppointmentsForDay(state, day) {
   return appointmentData;
 }
 
+//Function to get the correct details for interview from the api
 export function getInterview(state, interview) {
   if (!interview) {
     return null;
@@ -28,6 +31,7 @@ export function getInterview(state, interview) {
   return interviewData;
 }
 
+//Function to get the correct interviewers from the api
 export function getInterviewersForDay(state, day) {
   let dayInterviews = [];
   let interviewData = [];

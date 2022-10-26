@@ -12,6 +12,7 @@ export default function useApplicationData() {
 
   const setDay = (day) => setState({ ...state, day });
 
+  //Function to get data from the api using axios
   useEffect(() => {
     Promise.all([
       axios.get("/api/days"),
@@ -41,7 +42,7 @@ export default function useApplicationData() {
     });
     return days;
   }
-
+  //Function adds new appoinment to database so it can show user saved appointment
   function bookInterview(id, interview) {
     const addApp = "add Appointment";
     return axios.put(`api/appointments/${id}`, { interview }).then((res) => {
@@ -59,7 +60,7 @@ export default function useApplicationData() {
       setState((prev) => ({ ...prev, appointments, days }));
     });
   }
-
+  //Function deletes id in the database so it can show user canceled appointment
   function cancelInterview(id) {
     return axios.delete(`api/appointments/${id}`).then((res) => {
       const appointment = {
