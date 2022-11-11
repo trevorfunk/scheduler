@@ -27,7 +27,7 @@ export default function Appointment(props) {
     props.interview ? SHOW : EMPTY
   );
 
-  function edit(id) {
+  function edit(student, interviewer) {
     transition(EDIT);
   }
 
@@ -40,7 +40,7 @@ export default function Appointment(props) {
     bookInterview(id, interview)
       .then(() => transition(SHOW))
       .catch((err) => {
-        transition(ERROR_SAVE);
+        transition(ERROR_SAVE, true);
       });
   }
 
@@ -76,7 +76,7 @@ export default function Appointment(props) {
         <Form
           onCancel={() => back()}
           student={interview.student}
-          interviewer={interview.interviewer}
+          interviewer={interview.interviewer.id}
           interviewers={interviewers}
           onSave={onSave}
           id={id}
@@ -85,7 +85,7 @@ export default function Appointment(props) {
       {mode === CONFIRM && (
         <Confirm
           message={"Do you want to delete?"}
-          confirm={() => confirm()}
+          confirm={confirm}
           onCancel={() => back()}
         />
       )}
@@ -101,7 +101,7 @@ export default function Appointment(props) {
       {mode === ERROR_SAVE && (
         <Error
           message="Could not create appointment."
-          onClose={() => transition(SHOW)}
+          onClose={() => transition(CREATE, true)}
         />
       )}
       {mode === ERROR_DELETE && (
