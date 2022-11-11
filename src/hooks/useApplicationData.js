@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -28,18 +27,18 @@ export default function useApplicationData() {
     });
   }, []);
 
-  function updateSpots(addApp) {
-    const days = state.days.map((day) => {
-      if (day.name !== state.day) {
-        return { ...day };
-      } else {
-        if (addApp === undefined) {
-          return { ...day, spots: day.spots + 1 };
-        } else if (addApp === addApp) {
-          return { ...day, spots: day.spots - 1 };
-        }
+  function updateSpots(state, appointments) {
+    const dayObj = state.days.find((d) => d.name === state.day);
+    let spots = 0;
+    for (const id of dayObj.appointments) {
+      const appointment = appointments[id];
+      if (!appointment.interview) {
+        spots++;
       }
-    });
+    }
+    const newDay = { ...dayObj, spots };
+    const days = state.days.map((d) => (d.name === state.day ? newDay : d));
+
     return days;
   }
   //Function adds new appoinment to database so it can show user saved appointment
@@ -56,8 +55,8 @@ export default function useApplicationData() {
         [id]: appointment,
       };
 
-      const days = updateSpots(addApp);
-      setState((prev) => ({ ...prev, appointments, days }));
+      const days = updateSpots(state, appointments);
+      setState((prev) => ({ ...state, appointments, days }));
     });
   }
   //Function deletes id in the database so it can show user canceled appointment
@@ -73,8 +72,8 @@ export default function useApplicationData() {
         [id]: appointment,
       };
 
-      const days = updateSpots();
-      setState({ ...state, appointments, days });
+      const days = updateSpots(state, appointments);
+      setState((prev) => ({ ...state, appointments, days }));
     });
   }
 
